@@ -1,23 +1,12 @@
-import pytest
-from string_processor import StringProcessor
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-@pytest.mark.parametrize(
-        'text, result', 
-        [("погода", "Погода."), 
-         ("хорошая погода", "Хорошая погода."), 
-         ("Хорошая погода.", "Хорошая погода.")])
-def positive_tests(text, result):
-    stringprocessor = StringProcessor()
-    stringprocessor.process(text) == result
+driver = webdriver.Chrome()
 
-@pytest.mark.parametrize(
-        'text, result', 
-        [("", "."), ("     ", ".")])
-def negative_tests(text, result):
-    stringprocessor = StringProcessor()
-    stringprocessor.process(text) == result
+driver.get("http://the-internet.herokuapp.com")
 
-def negative_test():
-    stringprocessor = StringProcessor()
-    with pytest.raises(TypeError):
-        stringprocessor.process(123)
+element = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.LINK_TEXT, "A/B Testing"))).is_displayed()
+
+print(element)
