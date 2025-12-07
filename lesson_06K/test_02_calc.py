@@ -18,8 +18,9 @@ def test_calc():
     driver.find_element(By.XPATH, "//span[text()='8']").click()
     driver.find_element(By.XPATH, "//span[text()='=']").click()
     WebDriverWait(driver, 46).until(
-        EC.presence_of_element_located((
-            By.CSS_SELECTOR, "[style='display: none;']")))
+        EC.text_to_be_present_in_element((
+            By.CLASS_NAME, "screen"), "15")
+            )
     result = driver.find_element(By.CLASS_NAME, "screen").text
     assert result == "15"
 
