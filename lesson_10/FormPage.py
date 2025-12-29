@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import allure
 
 
 class FormPage:
@@ -20,32 +21,48 @@ class FormPage:
             'company': "SkyPro"
         }
 
+    @allure.step("Открыть сайт 'https://bonigarcia.dev/"
+                 "selenium-webdriver-java/data-types.html'")
     def open(self):
+        """Функция открывает сайт в браузере"""
         self.driver.get(
             "https://bonigarcia.dev/selenium-webdriver-java/data-types.html"
             )
 
+    @allure.step("Заполнить поля формы")
     def fill_form(self):
+        """Функция заполняет поля формы данными, указанными в словаре"""
         for field, value in self.fields.items():
             self.wait.until(
                 EC.presence_of_element_located((
                     By.NAME, field))).send_keys(value)
 
+    @allure.step("Нажать на кнопку 'Submit'")
     def submit_form(self):
+        """Функция нажимает на кнопку 'Submit'"""
         self.wait.until(
             EC.element_to_be_clickable((
                 By.CSS_SELECTOR, '[type="submit"]'))).click()
 
-    def get_field_class(self, field_id):
+    def get_field_class(self, field_id: str) -> str:
+        """Функция ищет по ID элемент и возвращает
+        значение его атрибута 'class'"""
         element = self.wait.until(
             EC.presence_of_element_located((
                 By.ID, field_id))).get_attribute("class")
         return element
 
-    def check_zip_code_error(self):
+    def check_zip_code_error(self) -> str:
+        """Функция возвращает значение 'alert-danger' класса элемента
+        с ID:'zip-code' в функцию 'get_field_class(self, field_id: str)'"""
         return "alert-danger" in self.get_field_class("zip-code")
 
-    def check_fields_success(self):
+    def check_fields_success(self) -> bool:
+        """Функция проверяет элементы по списку ID на наличие
+        'success' в классе элемента.
+
+        При положительном результате возвращает 'True',
+        при отрицательном - 'False'"""
         fields = ['first-name', 'last-name', 'address', 'e-mail', 'phone',
                   'city', 'country', 'job-position', 'company']
         for field in fields:
@@ -54,5 +71,6 @@ class FormPage:
         return True
 
     def check_form_submission(self):
+        """Функция проводит проверку состояния полей"""
         assert self.check_zip_code_error()
         assert self.check_fields_success()

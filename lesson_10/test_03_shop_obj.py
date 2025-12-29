@@ -4,6 +4,7 @@ from AuthShopPage import AuthShopPage
 from MainShopPage import MainShopPage
 from CartShopPage import CartShopPage
 from OrderShopPage import OrderShopPage
+import allure
 
 
 @pytest.fixture
@@ -15,6 +16,12 @@ def driver():
     driver.quit()
 
 
+@allure.title("Тестирование интернет-магазина")
+@allure.description("Проверки: 1. Добавление товаров в корзину;"
+                    "2. Соответствие товаров в корзине добавленным;"
+                    "3. Рассчет итоговой стоимости корзины.")
+@allure.feature("Интернет-магазин")
+@allure.severity("Critical")
 def test_shop(driver):
     auth_shop_page = AuthShopPage(driver)
     main_shop_page = MainShopPage(driver)
@@ -31,4 +38,6 @@ def test_shop(driver):
     order_shop_page.enter_info("Иван", "Наряднов", "400094")
     total = order_shop_page.check_total()
     driver.quit()
-    assert total == "$58.29"
+    with allure.step("Проверить фактический результат,"
+                     "сравнив его с ожидаемым"):
+        assert total == "$58.29"
